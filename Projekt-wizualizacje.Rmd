@@ -1,0 +1,98 @@
+---
+title: "Projekt Zaliczeniowy - Wizualizacje danych"
+author: 
+  - "Hanna Sopala"
+  - "Iga Bochniak"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+<style>
+body {
+    text-align: justify;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    font-size: 16px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+<details>
+  <summary> Templatka zawijaczy kodu </summary>
+
+
+</details>
+
+```{r ladowanie_bibliotek}
+
+```
+
+<!-- Instrukcje -->
+
+<!-- Ruch rowerowy w Gdańsku jest automatycznie mierzony za pomocą kilkudziesięciu punktów (stacji) pomiarowych znajdujących się pod ścieżką rowerową w wybranych lokalizacjach. W zbiorze danych przejazdy.RData znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu, a w zbiorze punkty_pomiarowe.RData znajdują się współrzędne geograficzne punktów pomiarowych. -->
+
+<!-- Proszę wykonać wizualizacje w R zgodnie z poniższymi poleceniami (dla każdego polecenia należy samodzielnie dobrać odpowiedni typ wykresu i ewentualny sposób agregacji danych): -->
+
+<!-- Przedstawić rozkład liczby dni pomiarowych w poszczególnych punktach -->
+<!-- Dla wybranego punktu przedstawić rozkład liczby przejazdów -->
+<!-- Porównać punkty pod względem natężenia /rozkładu przejazdów -->
+<!-- Przedstawić natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych -->
+<!-- Porównać stacje pod względem zależności z poprzedniego punktu -->
+<!-- Dla wybranej stacji przedstawić zależność między liczbą przejazdów a wybranymi warunkami pogodowymi -->
+<!-- Porównać stacje pod względem zależności z poprzedniego punktu -->
+<!-- Nanieść na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych -->
+<!-- Przedstawić zależności między zmiennymi opisującymi warunki pogodowe -->
+<!-- (Pod pojęciem "rozkład", występującym w niektórych poleceniach, rozumie się rozkład częstości, czyli szereg rozdzielczy). -->
+
+<!-- Do każdego punktu można wykonać jedną bądź kilka wizualizacji. -->
+
+<!-- Co najmniej po jednej wizualizacji należy wykonać za pomocą funkcji z pakietów graphics i ggplot2. -->
+
+<!-- Dodatkowo punktowane będzie wykonanie aplikacji w Shiny, w ramach której można wykonać wszystkie lub część poleceń. -->
+
+<!-- Jako rozwiązanie proszę załączyć wynikowe wizualizacje (np. pdf, jpeg, html) oraz skrypt z kodem (kod powinien być tak zapisany, aby można było wykonać wszystkie wizualizacje po załadowaniu oryginalnych danych). -->
+
+<!-- Projekt proszę wykonać indywidualnie lub w parach (wystarczy jak jedna osoba z pary załączy pliki na Teams). -->
+
+```{r ladowanie_danych, echo = FALSE}
+load('./przejazdy.RData')
+load('./punkty_pomiarowe.RData')
+
+head(przejazdy)
+head(punkty)
+```
+
+# Wstęp
+
+
+
+Celem niniejszego projektu jest
+
+| Zmienna | Opis  |
+|:---|:---|
+| `Stacja` | blabla  |
+
+#	Wstępna eksploracja danych 
+
+## Wymiary zbiorów
+
+```{r wymiary_zbiorow, include = F}
+dim(przejazdy)
+dim(punkty)
+```
+
+## Braki danych
+
+## Sprawdzenie poprawności typów zmiennych
+
+```{r typy_zmiennych}
+str(przejazdy)
+str(punkty)
+```
+
