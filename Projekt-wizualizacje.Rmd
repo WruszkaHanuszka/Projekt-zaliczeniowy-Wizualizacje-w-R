@@ -72,27 +72,27 @@ head(punkty)
 
 
 
-Celem niniejszego projektu jest
+Celem niniejszego projektu jest...
+
+Ruch rowerowy w Gdańsku jest automatycznie mierzony za pomocą kilkudziesięciu punktów (stacji) pomiarowych znajdujących się pod ścieżką rowerową w wybranych lokalizacjach. W zbiorze danych przejazdy.RData znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu, a w zbiorze punkty_pomiarowe.RData znajdują się współrzędne geograficzne punktów pomiarowych.
+
 
 | Zmienna | Opis  |
 |:---|:---|
 | `Stacja` | blabla  |
 
-#	Wstępna eksploracja danych 
+# Wizualizacje
 
-## Wymiary zbiorów
+## Rozkład liczby dni pomiarowych w poszczególnych punktach
+## Rozkład liczby przejazdów dla wybranego punktu
+## Porównanie punktów pod względem natężenia /rozkładu przejazdów
+## Natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych
+## Porównanie stacje pod względem zależności z poprzedniego punktu
+## Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi dla wybranej stacji
+## Porównanie stacji pod względem zależności z poprzedniego punktu 
+## Naniesienie na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych
+## Przedstawienie zależności między zmiennymi opisującymi warunki pogodowe
+## (Pod pojęciem "rozkład", występującym w niektórych poleceniach, rozumie się rozkład częstości, czyli szereg rozdzielczy).
 
-```{r wymiary_zbiorow, include = F}
-dim(przejazdy)
-dim(punkty)
-```
 
-## Braki danych
-
-## Sprawdzenie poprawności typów zmiennych
-
-```{r typy_zmiennych}
-str(przejazdy)
-str(punkty)
-```
-
+# Podsumowanie
