@@ -9,11 +9,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Hanna Sopala, Iga Bochniak" />
+<meta name="author" content="Hanna Sopala" />
+<meta name="author" content="Iga Bochniak" />
 
 <meta name="date" content="2026-04-02" />
 
-<title>Projekt zaliczeniowy - wizualizacje</title>
+<title>Projekt Zaliczeniowy - Wizualizacja danych</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -209,6 +210,83 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
+  rCodeBlocks.each(function() {
+    // skip if the block has fold-none class
+    if ($(this).hasClass('fold-none')) return;
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-bs-toggle', 'collapse') // BS5
+        .attr('data-target', '#' + id)
+        .attr('data-bs-target', '#' + id)   // BS5
+        .attr('aria-expanded', showThis)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // show the div if necessary
+    if (showThis) div.collapse('show');
+
+    // update state of button on show/hide
+    //   * Change text
+    //   * add a class for intermediate states styling
+    div.on('hide.bs.collapse', function () {
+      showCodeText.text('Show');
+      showCodeButton.addClass('btn-collapsing');
+    });
+    div.on('hidden.bs.collapse', function () {
+      showCodeButton.removeClass('btn-collapsing');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+      showCodeButton.addClass('btn-expanding');
+    });
+    div.on('shown.bs.collapse', function () {
+      showCodeButton.removeClass('btn-expanding');
+    });
+
+  });
+
+}
+</script>
 <style type="text/css">.hljs-literal {
 color: #990073;
 }
@@ -332,6 +410,9 @@ display: none;
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -348,49 +429,182 @@ display: none;
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Projekt zaliczeniowy - wizualizacje</h1>
-<h4 class="author">Hanna Sopala, Iga Bochniak</h4>
+
+<h1 class="title toc-ignore">Projekt Zaliczeniowy - Wizualizacja
+danych</h1>
+<h4 class="author">Hanna Sopala</h4>
+<h4 class="author">Iga Bochniak</h4>
 <h4 class="date">2026-04-02</h4>
 
 </div>
 
 
-<p>Instrukcje</p>
-<p>Ruch rowerowy w Gdańsku jest automatycznie mierzony za pomocą
-kilkudziesięciu punktów (stacji) pomiarowych znajdujących się pod
-ścieżką rowerową w wybranych lokalizacjach. W zbiorze danych
-przejazdy.RData znajdują się informacje o dziennych liczbach przejazdów
-rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w
-danym dniu, a w zbiorze punkty_pomiarowe.RData znajdują się współrzędne
-geograficzne punktów pomiarowych.</p>
-<p>Proszę wykonać wizualizacje w R zgodnie z poniższymi poleceniami (dla
-każdego polecenia należy samodzielnie dobrać odpowiedni typ wykresu i
-ewentualny sposób agregacji danych):</p>
-<p>Przedstawić rozkład liczby dni pomiarowych w poszczególnych punktach
-Dla wybranego punktu przedstawić rozkład liczby przejazdów Porównać
-punkty pod względem natężenia /rozkładu przejazdów Przedstawić natężenie
-/ rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia
-tygodnia / dni powszednich/weekendowych Porównać stacje pod względem
-zależności z poprzedniego punktu Dla wybranej stacji przedstawić
-zależność między liczbą przejazdów a wybranymi warunkami pogodowymi
-Porównać stacje pod względem zależności z poprzedniego punktu Nanieść na
-mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych
-Przedstawić zależności między zmiennymi opisującymi warunki pogodowe
-(Pod pojęciem “rozkład”, występującym w niektórych poleceniach, rozumie
-się rozkład częstości, czyli szereg rozdzielczy).</p>
-<p>Do każdego punktu można wykonać jedną bądź kilka wizualizacji.</p>
-<p>Co najmniej po jednej wizualizacji należy wykonać za pomocą funkcji z
-pakietów graphics i ggplot2.</p>
-<p>Dodatkowo punktowane będzie wykonanie aplikacji w Shiny, w ramach
-której można wykonać wszystkie lub część poleceń.</p>
-<p>Jako rozwiązanie proszę załączyć wynikowe wizualizacje (np. pdf,
-jpeg, html) oraz skrypt z kodem (kod powinien być tak zapisany, aby
-można było wykonać wszystkie wizualizacje po załadowaniu oryginalnych
-danych).</p>
-<p>Projekt proszę wykonać indywidualnie lub w parach (wystarczy jak
-jedna osoba z pary załączy pliki na Teams).</p>
+<style>
+body {
+text-align: justify;
+max-width: 1000px;
+margin: auto;
+padding: 20px;
+font-size: 16px;
+}
+</style>
+<details>
+<summary>
+Templatka zawijaczy kodu
+</summary>
+</details>
+<pre class="r"><code>#pacman::p_load()</code></pre>
+<!-- Instrukcje -->
+<!-- Ruch rowerowy w Gdańsku jest automatycznie mierzony za pomocą kilkudziesięciu punktów (stacji) pomiarowych znajdujących się pod ścieżką rowerową w wybranych lokalizacjach. W zbiorze danych przejazdy.RData znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu, a w zbiorze punkty_pomiarowe.RData znajdują się współrzędne geograficzne punktów pomiarowych. -->
+<!-- Proszę wykonać wizualizacje w R zgodnie z poniższymi poleceniami (dla każdego polecenia należy samodzielnie dobrać odpowiedni typ wykresu i ewentualny sposób agregacji danych): -->
+<!-- Przedstawić rozkład liczby dni pomiarowych w poszczególnych punktach -->
+<!-- Dla wybranego punktu przedstawić rozkład liczby przejazdów -->
+<!-- Porównać punkty pod względem natężenia /rozkładu przejazdów -->
+<!-- Przedstawić natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych -->
+<!-- Porównać stacje pod względem zależności z poprzedniego punktu -->
+<!-- Dla wybranej stacji przedstawić zależność między liczbą przejazdów a wybranymi warunkami pogodowymi -->
+<!-- Porównać stacje pod względem zależności z poprzedniego punktu -->
+<!-- Nanieść na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych -->
+<!-- Przedstawić zależności między zmiennymi opisującymi warunki pogodowe -->
+<!-- (Pod pojęciem "rozkład", występującym w niektórych poleceniach, rozumie się rozkład częstości, czyli szereg rozdzielczy). -->
+<!-- Do każdego punktu można wykonać jedną bądź kilka wizualizacji. -->
+<!-- Co najmniej po jednej wizualizacji należy wykonać za pomocą funkcji z pakietów graphics i ggplot2. -->
+<!-- Dodatkowo punktowane będzie wykonanie aplikacji w Shiny, w ramach której można wykonać wszystkie lub część poleceń. -->
+<!-- Jako rozwiązanie proszę załączyć wynikowe wizualizacje (np. pdf, jpeg, html) oraz skrypt z kodem (kod powinien być tak zapisany, aby można było wykonać wszystkie wizualizacje po załadowaniu oryginalnych danych). -->
+<!-- Projekt proszę wykonać indywidualnie lub w parach (wystarczy jak jedna osoba z pary załączy pliki na Teams). -->
+<div id="wstęp" class="section level1">
+<h1>Wstęp</h1>
+<p>Celem niniejszego opracowania jest analiza oraz wizualizacja danych
+dotyczących ruchu rowerowego w Gdańsku w oparciu o system automatycznych
+punktów pomiarowych. Projekt skupia się na zbadaniu dynamiki przejazdów,
+identyfikacji wzorców czasowych oraz określeniu wpływu warunków
+atmosferycznych na aktywność rowerzystów.</p>
+<p>W zbiorze danych znajdują się informacje o dziennych liczbach
+przejazdów rowerowych w wybranych punktach oraz informacje o warunkach
+pogodowych w danym dniu a w drugim zbiorze danych znajdują się
+współrzędne geograficzne punktów pomiarowych.</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Zmienna</th>
+<th align="left">Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>Stacja</code></td>
+<td align="left">Punkt pomiarowy</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Licznik</code></td>
+<td align="left">Liczba przejazdów</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Data</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>Zachmurzenie</code></td>
+<td align="left">Średnie dobowe zachmurzenie ogólne [oktanty]</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Wiatr</code></td>
+<td align="left">Średnia dobowa prędkość wiatru [m/s]</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Temperatura</code></td>
+<td align="left">Średnia dobowa temperatura [C]</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Ciśnienie_woda</code></td>
+<td align="left">Średnie dobowe ciśnienie pary wodnej [hPa]</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Wilgotność</code></td>
+<td align="left">Średnia dobowa wilgotność względna [%]</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Ciśnienie_stacja</code></td>
+<td align="left">Średnie dobowe ciśnienie na poziomie stacji [hPa]</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Ciśnienie_morze</code></td>
+<td align="left">Średnie dobowe ciśnienie na poziomie morza [hPa]</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Opady_dzień</code></td>
+<td align="left">Suma opadu dzień [mm]</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Opady_noc</code></td>
+<td align="left">Suma opadu noc [mm]</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>View(przejazdy)
+head(punkty)</code></pre>
+<pre><code>##                       stacja       geometry
+## 1              Pas Nadmorski 18.622, 54.414
+## 2             al. Zwycięstwa 18.625, 54.372
+## 3                 ul. 3 Maja 18.642, 54.352
+## 4 al. Grunwaldzka (Wrzeszcz) 18.607, 54.378
+## 5                    Błędnik 18.646, 54.358
+## 6                al. Hallera 18.624, 54.377</code></pre>
+</div>
+<div id="wizualizacje" class="section level1">
+<h1>Wizualizacje</h1>
+<div id="rozkład-liczby-dni-pomiarowych-w-poszczególnych-punktach" class="section level2">
+<h2>Rozkład liczby dni pomiarowych w poszczególnych punktach</h2>
+</div>
+<div id="rozkład-liczby-przejazdów-dla-wybranego-punktu" class="section level2">
+<h2>Rozkład liczby przejazdów dla wybranego punktu</h2>
+</div>
+<div id="porównanie-punktów-pod-względem-natężenia-rozkładu-przejazdów" class="section level2">
+<h2>Porównanie punktów pod względem natężenia /rozkładu przejazdów</h2>
+</div>
+<div id="natężenie-rozkład-przejazdów-dla-wybranej-stacji-w-zależności-od-miesiąca-dnia-tygodnia-dni-powszednichweekendowych" class="section level2">
+<h2>Natężenie / rozkład przejazdów dla wybranej stacji w zależności od
+miesiąca / dnia tygodnia / dni powszednich/weekendowych</h2>
+</div>
+<div id="porównanie-stacje-pod-względem-zależności-z-poprzedniego-punktu" class="section level2">
+<h2>Porównanie stacje pod względem zależności z poprzedniego punktu</h2>
+</div>
+<div id="zależność-między-liczbą-przejazdów-a-wybranymi-warunkami-pogodowymi-dla-wybranej-stacji" class="section level2">
+<h2>Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi
+dla wybranej stacji</h2>
+</div>
+<div id="porównanie-stacji-pod-względem-zależności-z-poprzedniego-punktu" class="section level2">
+<h2>Porównanie stacji pod względem zależności z poprzedniego punktu</h2>
+</div>
+<div id="naniesienie-na-mapę-wybrane-statystyki-dotyczące-przejazdów-w-punktach-pomiarowych" class="section level2">
+<h2>Naniesienie na mapę wybrane statystyki dotyczące przejazdów w
+punktach pomiarowych</h2>
+</div>
+<div id="przedstawienie-zależności-między-zmiennymi-opisującymi-warunki-pogodowe" class="section level2">
+<h2>Przedstawienie zależności między zmiennymi opisującymi warunki
+pogodowe</h2>
+</div>
+<div id="pod-pojęciem-rozkład-występującym-w-niektórych-poleceniach-rozumie-się-rozkład-częstości-czyli-szereg-rozdzielczy." class="section level2">
+<h2>(Pod pojęciem “rozkład”, występującym w niektórych poleceniach,
+rozumie się rozkład częstości, czyli szereg rozdzielczy).</h2>
+</div>
+</div>
+<div id="podsumowanie" class="section level1">
+<h1>Podsumowanie</h1>
+</div>
 
 
 
@@ -425,6 +639,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

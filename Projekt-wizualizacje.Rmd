@@ -1,5 +1,5 @@
 ---
-title: "Projekt Zaliczeniowy - Wizualizacje danych"
+title: "Projekt Zaliczeniowy - Wizualizacja danych"
 author: 
   - "Hanna Sopala"
   - "Iga Bochniak"
@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 </details>
 
 ```{r ladowanie_bibliotek}
-
+#pacman::p_load()
 ```
 
 <!-- Instrukcje -->
@@ -63,23 +63,37 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```{r ladowanie_danych, echo = FALSE}
 load('./przejazdy.RData')
 load('./punkty_pomiarowe.RData')
-
-head(przejazdy)
-head(punkty)
 ```
 
 # Wstęp
 
+Celem niniejszego opracowania jest analiza oraz wizualizacja danych dotyczących ruchu rowerowego w Gdańsku w oparciu o system automatycznych punktów pomiarowych. Projekt skupia się na zbadaniu dynamiki przejazdów, identyfikacji wzorców czasowych oraz określeniu wpływu warunków atmosferycznych na aktywność rowerzystów.
 
-
-Celem niniejszego projektu jest...
-
-Ruch rowerowy w Gdańsku jest automatycznie mierzony za pomocą kilkudziesięciu punktów (stacji) pomiarowych znajdujących się pod ścieżką rowerową w wybranych lokalizacjach. W zbiorze danych przejazdy.RData znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu, a w zbiorze punkty_pomiarowe.RData znajdują się współrzędne geograficzne punktów pomiarowych.
-
+W zbiorach danych znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu oraz współrzędne geograficzne punktów pomiarowych.
 
 | Zmienna | Opis  |
 |:---|:---|
-| `Stacja` | blabla  |
+| `Stacja` | Punkt pomiarowy |
+| `Licznik` | Liczba przejazdów |
+| `Data` | Data [rok-miesiąc-dzień] |
+| `Zachmurzenie` | Średnie dobowe zachmurzenie ogólne [oktanty] |
+| `Wiatr` | Średnia dobowa prędkość wiatru [m/s] |
+| `Temperatura` | Średnia dobowa temperatura [C] |
+| `Ciśnienie_woda` | Średnie dobowe ciśnienie pary wodnej [hPa] |
+| `Wilgotność` | Średnia dobowa wilgotność względna [%] |
+| `Ciśnienie_stacja` | Średnie dobowe ciśnienie na poziomie stacji [hPa] |
+| `Ciśnienie_morze` | Średnie dobowe ciśnienie na poziomie morza [hPa] |
+| `Opady_dzień` | Suma opadu dzień [mm] |
+| `Opady_noc` | Suma opadu noc [mm] |
+| `Geometry` | Współrzędne geograficzne punktu pomiaru |
+
+Zbiory są kompletne i nie zawierają braków danych.
+
+```{r}
+sum(is.na(przejazdy))
+sum(is.na(punkty))
+```
+
 
 # Wizualizacje
 
