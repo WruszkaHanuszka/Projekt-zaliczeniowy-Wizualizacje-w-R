@@ -1,5 +1,5 @@
-# Projekt-zaliczeniowy-Wizualizacje-w-R
-przedmiot - Zaawansowane metody wizualizacji i raportowania danych
+# Projekt zaliczeniowy Wizualizacje w R
+przedmiot: Zaawansowane metody wizualizacji i raportowania danych
 
 Celem niniejszego opracowania jest analiza oraz wizualizacja danych dotyczących ruchu rowerowego w Gdańsku w oparciu o system automatycznych punktów pomiarowych. Projekt skupia się na zbadaniu dynamiki przejazdów, identyfikacji wzorców czasowych oraz określeniu wpływu warunków atmosferycznych na aktywność rowerzystów.
 
