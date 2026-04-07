@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 </details>
 
 ```{r ladowanie_bibliotek}
-#pacman::p_load()
+pacman::p_load(RColorBrewer, ggplot2, scales)
 ```
 
 <!-- Instrukcje -->
@@ -98,15 +98,103 @@ sum(is.na(punkty))
 # Wizualizacje
 
 ## Rozkład liczby dni pomiarowych w poszczególnych punktach
+
+```{r wizualizacja_1_graphics}
+
+```
+
+```{r wizualizacja_1_ggplot2}
+
+```
+
+
 ## Rozkład liczby przejazdów dla wybranego punktu
+
+```{r wizualizacja_2_graphics}
+
+```
+
+```{r wizualizacja_2_ggplot2}
+
+```
+
+
 ## Porównanie punktów pod względem natężenia /rozkładu przejazdów
+
+```{r wizualizacja_3_graphics}
+
+```
+
+```{r wizualizacja_3_ggplot2}
+
+```
+
 ## Natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych
+
+```{r wizualizacja_4_graphics}
+
+```
+
+```{r wizualizacja_4_ggplot2}
+
+```
+
+
 ## Porównanie stacje pod względem zależności z poprzedniego punktu
+
+```{r wizualizacja_5_graphics}
+
+```
+
+```{r wizualizacja_5_ggplot2}
+
+```
+
+
 ## Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi dla wybranej stacji
+
+```{r wizualizacja_6_graphics}
+
+```
+
+```{r wizualizacja_6_ggplot2}
+
+```
+
+
 ## Porównanie stacji pod względem zależności z poprzedniego punktu 
+
+```{r wizualizacja_7_graphics}
+
+```
+
+```{r wizualizacja_7_ggplot2}
+
+```
+
+
 ## Naniesienie na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych
+
+```{r wizualizacja_8_graphics}
+
+```
+
+```{r wizualizacja_8_ggplot2}
+
+```
+
+
 ## Przedstawienie zależności między zmiennymi opisującymi warunki pogodowe
-## (Pod pojęciem "rozkład", występującym w niektórych poleceniach, rozumie się rozkład częstości, czyli szereg rozdzielczy).
+
+```{r wizualizacja_9_graphics}
+
+```
+
+```{r wizualizacja_9_ggplot2}
+
+```
 
 
 # Podsumowanie
+
+
