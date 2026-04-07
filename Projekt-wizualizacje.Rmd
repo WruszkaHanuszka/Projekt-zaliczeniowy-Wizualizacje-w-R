@@ -89,9 +89,13 @@ W zbiorach danych znajdują się informacje o dziennych liczbach przejazdów row
 
 Zbiory są kompletne i nie zawierają braków danych.
 
-```{r}
+```{r braki_danych}
 sum(is.na(przejazdy))
 sum(is.na(punkty))
+```
+
+```{r kolorki}
+kolorki <- brewer.pal(100, "RdPu")
 ```
 
 
@@ -99,12 +103,30 @@ sum(is.na(punkty))
 
 ## Rozkład liczby dni pomiarowych w poszczególnych punktach
 
-```{r wizualizacja_1_graphics}
+```{r wizualizacja_1_pomocnicze}
+dni_per_stacja <- table(przejazdy$Stacja)
 
+dni_per_stacja <- sort(dni_per_stacja, decreasing = TRUE)
+```
+
+
+```{r wizualizacja_1_graphics}
+barplot(dni_per_stacja, 
+        las = 2,                   # Obrócenie etykiet osi X o 90 stopni
+        cex.names = 0.7,           # Zmniejszenie czcionki etykiet
+        main = "Liczba dni pomiarowych w stacjach",
+        col = kolorki[8],
+        ylab = "Liczba dni")
 ```
 
 ```{r wizualizacja_1_ggplot2}
-
+ggplot(przejazdy, aes(x = reorder(Stacja, Stacja, function(x) -length(x)))) +
+  geom_bar(fill = "steelblue") +
+  coord_flip() +  # Zamiana osi, aby nazwy stacji były czytelne (w poziomie)
+  labs(title = "Rozkład liczby dni pomiarowych",
+       x = "Stacja",
+       y = "Liczba dni") +
+  theme_minimal()
 ```
 
 
