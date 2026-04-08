@@ -23,17 +23,11 @@ body {
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-<details>
-  <summary> Templatka zawijaczy kodu </summary>
-
-
-</details>
-
 ```{r ladowanie_bibliotek}
-pacman::p_load(RColorBrewer, ggplot2, scales)
+pacman::p_load(RColorBrewer, ggplot2, scales, stringr)
 ```
 
-<!-- Instrukcje -->
+# Instrukcje
 
 <!-- Ruch rowerowy w Gdańsku jest automatycznie mierzony za pomocą kilkudziesięciu punktów (stacji) pomiarowych znajdujących się pod ścieżką rowerową w wybranych lokalizacjach. W zbiorze danych przejazdy.RData znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu, a w zbiorze punkty_pomiarowe.RData znajdują się współrzędne geograficzne punktów pomiarowych. -->
 
@@ -95,7 +89,7 @@ sum(is.na(punkty))
 ```
 
 ```{r kolorki}
-kolorki <- brewer.pal(100, "RdPu")
+kolorki <- brewer.pal(9, "RdPu")
 ```
 
 
@@ -103,32 +97,43 @@ kolorki <- brewer.pal(100, "RdPu")
 
 ## Rozkład liczby dni pomiarowych w poszczególnych punktach
 
+<!-- XXX chodzi o rozklad pokazac dla wszystkich stacji w gdansku czy wybrac pare punktow i indywidualnie pokazac dla nich rozklad? poszczególnych = kilku wybranych czy poszczególnych = wszystkich???? polski język trudna rzecz-->
+
 ```{r wizualizacja_1_pomocnicze}
-dni_per_stacja <- table(przejazdy$Stacja)
-
-dni_per_stacja <- sort(dni_per_stacja, decreasing = TRUE)
+dni_per_stacja <- sort(table(przejazdy$Stacja), decreasing = FALSE)
+dni_per_stacja
 ```
 
 
-```{r wizualizacja_1_graphics}
-barplot(dni_per_stacja, 
-        las = 2,                   # Obrócenie etykiet osi X o 90 stopni
-        cex.names = 0.7,           # Zmniejszenie czcionki etykiet
-        main = "Liczba dni pomiarowych w stacjach",
-        col = kolorki[8],
-        ylab = "Liczba dni")
-```
-
-```{r wizualizacja_1_ggplot2}
-ggplot(przejazdy, aes(x = reorder(Stacja, Stacja, function(x) -length(x)))) +
-  geom_bar(fill = "steelblue") +
-  coord_flip() +  # Zamiana osi, aby nazwy stacji były czytelne (w poziomie)
+```{r wizualizacja_1_ggplot2, echo=FALSE}
+plot1_gg <- ggplot(przejazdy, aes(x = reorder(Stacja, Stacja, function(x) length(x)))) +
+  geom_bar(fill = "#C51B7D") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 25)) +
   labs(title = "Rozkład liczby dni pomiarowych",
-       x = "Stacja",
+       subtitle = "Zestawienie liczby odczytów dla wszystkich stacji w Gdańsku",
+       x = "Punkt pomiarowy",
        y = "Liczba dni") +
-  theme_minimal()
+  theme_light() +
+  theme(
+      axis.text.x = element_text(angle = 65, hjust = 1, size = 8),
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(hjust = 0.5)
+    )
+
+plot1_gg
 ```
 
+
+```{r wizualizacja_1_graphics, echo=FALSE}
+par(mar = c(10, 4, 4, 2) + 0.1)
+barplot(height = dni_per_stacja, 
+        main = "Liczba dni pomiarowych w poszczególnych punktach",
+        col = kolorki[6], 
+        las = 2, 
+        cex.names = 0.7, 
+        ylab = "Liczba dni", 
+        border = "black")
+```
 
 ## Rozkład liczby przejazdów dla wybranego punktu
 
