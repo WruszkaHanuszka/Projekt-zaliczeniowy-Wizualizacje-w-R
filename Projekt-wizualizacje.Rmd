@@ -20,11 +20,11 @@ body {
 </style>
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.height = 6, fig.width = 8, fig.align = "center")
 ```
 
 ```{r ladowanie_bibliotek}
-pacman::p_load(RColorBrewer, ggplot2, scales, stringr)
+pacman::p_load(RColorBrewer, ggplot2, stringr)
 ```
 
 # Instrukcje
@@ -97,11 +97,10 @@ kolorki <- brewer.pal(9, "RdPu")
 
 ## Rozkład liczby dni pomiarowych w poszczególnych punktach
 
-<!-- XXX chodzi o rozklad pokazac dla wszystkich stacji w gdansku czy wybrac pare punktow i indywidualnie pokazac dla nich rozklad? poszczególnych = kilku wybranych czy poszczególnych = wszystkich???? polski język trudna rzecz-->
+<!-- XXX chodzi o rozklad pokazac dla wszystkich stacji w gdansku czy wybrac pare punktow i indywidualnie pokazac dla nich rozklad? poszczególnych = kilku wybranych czy poszczególnych = wszystkich???? polski język trudna rzecz -->
 
 ```{r wizualizacja_1_pomocnicze}
 dni_per_stacja <- sort(table(przejazdy$Stacja), decreasing = FALSE)
-dni_per_stacja
 ```
 
 
@@ -132,31 +131,89 @@ barplot(height = dni_per_stacja,
         las = 2, 
         cex.names = 0.7, 
         ylab = "Liczba dni", 
-        border = "black")
+        border = "white")
 ```
 
 ## Rozkład liczby przejazdów dla wybranego punktu
 
-```{r wizualizacja_2_graphics}
+```{r wizualizacja_2_pomocnicze}
+stacja_wybrana <- "ul. Chłopska"
+dane_stacja <- przejazdy[przejazdy$Stacja == stacja_wybrana, ]
+```
 
+
+```{r wizualizacja_2_graphics}
+par(mar = c(5, 4, 4, 2) + 0.1)
+
+hist(dane_stacja$Licznik, 
+     breaks = 20,
+     main = paste("Rozkład liczby przejazdów:", stacja_wybrana),
+     xlab = "Liczba przejazdów dziennie",
+     ylab = "Częstość (liczba dni)",
+     col = kolorki[6],
+     border = "white")
 ```
 
 ```{r wizualizacja_2_ggplot2}
-
+ggplot(dane_stacja, aes(x = Licznik)) +
+  geom_histogram(bins = 20, 
+                 fill = "#C51B7D", 
+                 alpha = 0.7) +
+  labs(title = paste("Rozkład liczby przejazdów -", stacja_wybrana),
+       x = "Liczba przejazdów dziennie",
+       y = "Gęstość") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
 
 ## Porównanie punktów pod względem natężenia /rozkładu przejazdów
 
-```{r wizualizacja_3_graphics}
+```{r wizualizacja_3_pomocnicze}
+stacje_order <- aggregate(Licznik ~ Stacja, data = przejazdy, median)
+stacje_order <- stacje_order$Stacja[order(stacje_order$Licznik)]
 
+przejazdy$Stacja_f <- factor(przejazdy$Stacja, levels = stacje_order)
+```
+
+Stacje posortowane według mediany dziennej liczby przejazdów.
+
+```{r wizualizacja_3_graphics}
+par(mar = c(7, 10, 5, 1) + 0.1)
+
+boxplot(Licznik ~ Stacja_f,
+        data = przejazdy,
+        horizontal = TRUE,
+        las = 1,
+        col = kolorki[6],
+        outline = FALSE,
+        main = "Porównanie natężenia ruchu rowerowego w punktach",
+        xlab = "Liczba przejazdów dziennie",
+        ylab = "", # ciagle nam nachodzilo na wartosci na osi Y
+        cex.axis = 0.7)
+
+title(ylab = "Punkt pomiarowy", line = 8, cex.lab = 1) # sposob obejscia problemu
 ```
 
 ```{r wizualizacja_3_ggplot2}
-
+ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
+  geom_boxplot(fill = "#C51B7D", 
+               outlier.color = "#DE77AE", 
+               outlier.size = 0.5) +
+  coord_flip() +
+  labs(title = "Porównanie natężenia ruchu rowerowego w punktach",
+       x = "Punkt pomiarowy",
+       y = "Liczba przejazdów dziennie") +
+  theme_light() +
+  theme(axis.text.y = element_text(size = 8))
 ```
 
 ## Natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych
+
+```{r wizualizacja_4_pomocnicze}
+
+```
 
 ```{r wizualizacja_4_graphics}
 
@@ -169,6 +226,10 @@ barplot(height = dni_per_stacja,
 
 ## Porównanie stacje pod względem zależności z poprzedniego punktu
 
+```{r wizualizacja_5_pomocnicze}
+
+```
+
 ```{r wizualizacja_5_graphics}
 
 ```
@@ -179,6 +240,10 @@ barplot(height = dni_per_stacja,
 
 
 ## Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi dla wybranej stacji
+
+```{r wizualizacja_6_pomocnicze}
+
+```
 
 ```{r wizualizacja_6_graphics}
 
@@ -191,6 +256,10 @@ barplot(height = dni_per_stacja,
 
 ## Porównanie stacji pod względem zależności z poprzedniego punktu 
 
+```{r wizualizacja_7_pomocnicze}
+
+```
+
 ```{r wizualizacja_7_graphics}
 
 ```
@@ -201,6 +270,10 @@ barplot(height = dni_per_stacja,
 
 
 ## Naniesienie na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych
+
+```{r wizualizacja_8_pomocnicze}
+
+```
 
 ```{r wizualizacja_8_graphics}
 
@@ -213,6 +286,10 @@ barplot(height = dni_per_stacja,
 
 ## Przedstawienie zależności między zmiennymi opisującymi warunki pogodowe
 
+```{r wizualizacja_9_pomocnicze}
+
+```
+
 ```{r wizualizacja_9_graphics}
 
 ```
@@ -220,8 +297,3 @@ barplot(height = dni_per_stacja,
 ```{r wizualizacja_9_ggplot2}
 
 ```
-
-
-# Podsumowanie
-
-
