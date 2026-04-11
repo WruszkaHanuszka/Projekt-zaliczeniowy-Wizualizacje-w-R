@@ -240,7 +240,7 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 
 ```
 
-## Porównanie stacje pod względem zależności z poprzedniego punktu
+## Porównanie stacji pod względem zależności z poprzedniego punktu
 
 ```{r wizualizacja_5_pomocnicze}
 
@@ -282,7 +282,7 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 
 ```
 
-## Naniesienie na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych
+## Naniesienie na mapę wybranych statystyk dotyczących przejazdów w punktach pomiarowych
 
 ```{r wizualizacja_8_pomocnicze}
 
