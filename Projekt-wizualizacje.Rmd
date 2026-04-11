@@ -9,6 +9,7 @@ output:
     code_folding: hide
 ---
 
+```{=html}
 <style>
 body {
     text-align: justify;
@@ -18,13 +19,25 @@ body {
     font-size: 16px;
 }
 </style>
+```
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.height = 6, fig.width = 8, fig.align = "center")
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  fig.height = 6, 
+  fig.width = 8, 
+  fig.align = "center"
+  )
 ```
 
 ```{r ladowanie_bibliotek}
-pacman::p_load(RColorBrewer, ggplot2, stringr)
+pacman::p_load(
+  RColorBrewer, 
+  ggplot2, 
+  stringr
+  )
 ```
 
 # Instrukcje
@@ -34,14 +47,23 @@ pacman::p_load(RColorBrewer, ggplot2, stringr)
 <!-- Proszę wykonać wizualizacje w R zgodnie z poniższymi poleceniami (dla każdego polecenia należy samodzielnie dobrać odpowiedni typ wykresu i ewentualny sposób agregacji danych): -->
 
 <!-- Przedstawić rozkład liczby dni pomiarowych w poszczególnych punktach -->
+
 <!-- Dla wybranego punktu przedstawić rozkład liczby przejazdów -->
+
 <!-- Porównać punkty pod względem natężenia /rozkładu przejazdów -->
+
 <!-- Przedstawić natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych -->
+
 <!-- Porównać stacje pod względem zależności z poprzedniego punktu -->
+
 <!-- Dla wybranej stacji przedstawić zależność między liczbą przejazdów a wybranymi warunkami pogodowymi -->
+
 <!-- Porównać stacje pod względem zależności z poprzedniego punktu -->
+
 <!-- Nanieść na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych -->
+
 <!-- Przedstawić zależności między zmiennymi opisującymi warunki pogodowe -->
+
 <!-- (Pod pojęciem "rozkład", występującym w niektórych poleceniach, rozumie się rozkład częstości, czyli szereg rozdzielczy). -->
 
 <!-- Do każdego punktu można wykonać jedną bądź kilka wizualizacji. -->
@@ -63,23 +85,23 @@ load('./punkty_pomiarowe.RData')
 
 Celem niniejszego opracowania jest analiza oraz wizualizacja danych dotyczących ruchu rowerowego w Gdańsku w oparciu o system automatycznych punktów pomiarowych. Projekt skupia się na zbadaniu dynamiki przejazdów, identyfikacji wzorców czasowych oraz określeniu wpływu warunków atmosferycznych na aktywność rowerzystów.
 
-W zbiorach danych znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach oraz informacje o warunkach pogodowych w danym dniu oraz współrzędne geograficzne punktów pomiarowych.
+W zbiorach danych znajdują się informacje o dziennych liczbach przejazdów rowerowych w wybranych punktach, informacje o warunkach pogodowych w danym dniu oraz współrzędne geograficzne punktów pomiarowych.
 
-| Zmienna | Opis  |
-|:---|:---|
-| `Stacja` | Punkt pomiarowy |
-| `Licznik` | Liczba przejazdów |
-| `Data` | Data [rok-miesiąc-dzień] |
-| `Zachmurzenie` | Średnie dobowe zachmurzenie ogólne [oktanty] |
-| `Wiatr` | Średnia dobowa prędkość wiatru [m/s] |
-| `Temperatura` | Średnia dobowa temperatura [C] |
-| `Ciśnienie_woda` | Średnie dobowe ciśnienie pary wodnej [hPa] |
-| `Wilgotność` | Średnia dobowa wilgotność względna [%] |
+| Zmienna            | Opis                                              |
+|:-------------------|:--------------------------------------------------|
+| `Stacja`           | Punkt pomiarowy                                   |
+| `Licznik`          | Liczba przejazdów                                 |
+| `Data`             | Data [rok-miesiąc-dzień]                          |
+| `Zachmurzenie`     | Średnie dobowe zachmurzenie ogólne [oktanty]      |
+| `Wiatr`            | Średnia dobowa prędkość wiatru [m/s]              |
+| `Temperatura`      | Średnia dobowa temperatura [C]                    |
+| `Ciśnienie_woda`   | Średnie dobowe ciśnienie pary wodnej [hPa]        |
+| `Wilgotność`       | Średnia dobowa wilgotność względna [%]            |
 | `Ciśnienie_stacja` | Średnie dobowe ciśnienie na poziomie stacji [hPa] |
-| `Ciśnienie_morze` | Średnie dobowe ciśnienie na poziomie morza [hPa] |
-| `Opady_dzień` | Suma opadu dzień [mm] |
-| `Opady_noc` | Suma opadu noc [mm] |
-| `Geometry` | Współrzędne geograficzne punktu pomiaru |
+| `Ciśnienie_morze`  | Średnie dobowe ciśnienie na poziomie morza [hPa]  |
+| `Opady_dzień`      | Suma opadu dzień [mm]                             |
+| `Opady_noc`        | Suma opadu noc [mm]                               |
+| `Geometry`         | Współrzędne geograficzne punktu pomiaru           |
 
 Zbiory są kompletne i nie zawierają braków danych.
 
@@ -88,10 +110,9 @@ sum(is.na(przejazdy))
 sum(is.na(punkty))
 ```
 
-```{r kolorki}
-kolorki <- brewer.pal(9, "RdPu")
+```{r paleta_kolorow}
+paleta_kolorow <- brewer.pal(9, "RdPu")
 ```
-
 
 # Wizualizacje
 
@@ -102,7 +123,6 @@ kolorki <- brewer.pal(9, "RdPu")
 ```{r wizualizacja_1_pomocnicze}
 dni_per_stacja <- sort(table(przejazdy$Stacja), decreasing = FALSE)
 ```
-
 
 ```{r wizualizacja_1_ggplot2, echo=FALSE}
 plot1_gg <- ggplot(przejazdy, aes(x = reorder(Stacja, Stacja, function(x) length(x)))) +
@@ -122,12 +142,11 @@ plot1_gg <- ggplot(przejazdy, aes(x = reorder(Stacja, Stacja, function(x) length
 plot1_gg
 ```
 
-
 ```{r wizualizacja_1_graphics, echo=FALSE}
 par(mar = c(10, 4, 4, 2) + 0.1)
 barplot(height = dni_per_stacja, 
         main = "Liczba dni pomiarowych w poszczególnych punktach",
-        col = kolorki[6], 
+        col = paleta_kolorow[6], 
         las = 2, 
         cex.names = 0.7, 
         ylab = "Liczba dni", 
@@ -141,7 +160,6 @@ stacja_wybrana <- "ul. Chłopska"
 dane_stacja <- przejazdy[przejazdy$Stacja == stacja_wybrana, ]
 ```
 
-
 ```{r wizualizacja_2_graphics}
 par(mar = c(5, 4, 4, 2) + 0.1)
 
@@ -150,7 +168,7 @@ hist(dane_stacja$Licznik,
      main = paste("Rozkład liczby przejazdów:", stacja_wybrana),
      xlab = "Liczba przejazdów dziennie",
      ylab = "Częstość (liczba dni)",
-     col = kolorki[6],
+     col = paleta_kolorow[6],
      border = "white")
 ```
 
@@ -167,8 +185,7 @@ ggplot(dane_stacja, aes(x = Licznik)) +
         plot.subtitle = element_text(hjust = 0.5))
 ```
 
-
-## Porównanie punktów pod względem natężenia /rozkładu przejazdów
+## Porównanie punktów pod względem natężenia / rozkładu przejazdów
 
 ```{r wizualizacja_3_pomocnicze}
 stacje_order <- aggregate(Licznik ~ Stacja, data = przejazdy, median)
@@ -186,7 +203,7 @@ boxplot(Licznik ~ Stacja_f,
         data = przejazdy,
         horizontal = TRUE,
         las = 1,
-        col = kolorki[6],
+        col = paleta_kolorow[6],
         outline = FALSE,
         main = "Porównanie natężenia ruchu rowerowego w punktach",
         xlab = "Liczba przejazdów dziennie",
@@ -223,7 +240,6 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 
 ```
 
-
 ## Porównanie stacje pod względem zależności z poprzedniego punktu
 
 ```{r wizualizacja_5_pomocnicze}
@@ -237,7 +253,6 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 ```{r wizualizacja_5_ggplot2}
 
 ```
-
 
 ## Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi dla wybranej stacji
 
@@ -253,8 +268,7 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 
 ```
 
-
-## Porównanie stacji pod względem zależności z poprzedniego punktu 
+## Porównanie stacji pod względem zależności z poprzedniego punktu
 
 ```{r wizualizacja_7_pomocnicze}
 
@@ -267,7 +281,6 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 ```{r wizualizacja_7_ggplot2}
 
 ```
-
 
 ## Naniesienie na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych
 
@@ -282,7 +295,6 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 ```{r wizualizacja_8_ggplot2}
 
 ```
-
 
 ## Przedstawienie zależności między zmiennymi opisującymi warunki pogodowe
 
