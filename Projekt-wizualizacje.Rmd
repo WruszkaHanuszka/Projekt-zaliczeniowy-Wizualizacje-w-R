@@ -77,6 +77,18 @@ pacman::p_load(
 
 <!-- Projekt proszę wykonać indywidualnie lub w parach (wystarczy jak jedna osoba z pary załączy pliki na Teams). -->
 
+# TO DO
+
+**Nanieść na mapę wybrane statystyki dotyczące przejazdów w punktach pomiarowych**
+
+**Przedstawić zależności między zmiennymi opisującymi warunki pogodowe**
+
+**Dodatkowo punktowane będzie wykonanie aplikacji w Shiny, w ramach której można wykonać wszystkie lub część poleceń.**
+
+**Sprawdzić Hani część, czy wszystko git, można coś dorobić zwłaszcza w podpunktach "dla wybranych blablabla"**
+
+**Nwm czy trzeba, ale jak chcesz to mozesz cos dopisac typu zdanie jakiegos wniosku czy co**
+
 ```{r ladowanie_danych, echo = FALSE}
 load('./przejazdy.RData')
 load('./punkty_pomiarowe.RData')
@@ -370,31 +382,218 @@ ggplot(dane_porownanie, aes(x = Miesiac, y = Licznik, fill = Stacja)) +
 
 ## Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi dla wybranej stacji
 
-```{r wizualizacja_6_pomocnicze}
+```{r wizualizacja_6_graphics_temperatura}
+stare_par <- par(bg = "white", col.axis = "grey30", fg = "grey30")
 
+with(dane_stacja, plot(Temperatura, Licznik, 
+                       main = "Zależność przejazdów od temperatury (Base R)",
+                       xlab = "Temperatura [°C]", 
+                       ylab = "Liczba przejazdów",
+                       pch = 21,
+                       col = "grey50",
+                       bg = paleta_kolorow[5],
+                       cex = 0.8,
+                       las = 1,
+                       bty = "n"))
+
+lines(lowess(dane_stacja$Temperatura, dane_stacja$Licznik), 
+      col = paleta_kolorow[8], lwd = 2)
+
+par(stare_par)
 ```
 
-```{r wizualizacja_6_graphics}
-
+```{r wizualizacja_6_ggplot2_temperatura}
+ggplot(dane_stacja, aes(x = Temperatura, y = Licznik)) +
+  geom_point(color = paleta_kolorow[5], alpha = 0.5) +
+  geom_smooth(method = "loess", color = paleta_kolorow[8], fill = paleta_kolorow[2]) +
+  labs(title = "Wpływ temperatury na natężenie ruchu",
+       subtitle = "Stacja: ul. Chłopska",
+       x = "Średnia dobowa temperatura [°C]",
+       y = "Liczba przejazdów") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
-```{r wizualizacja_6_ggplot2}
+```{r wizualizacja_6_graphics_opady}
+stare_par <- par(bg = "white", col.axis = "grey30", fg = "grey30")
 
+with(dane_stacja, plot(Opady_dzień, Licznik, 
+                       main = "Zależność przejazdów od opadów (Base R)",
+                       xlab = "Suma opadu dzień [mm]", 
+                       ylab = "Liczba przejazdów",
+                       pch = 21, 
+                       col = "grey50", 
+                       bg = paleta_kolorow[4], 
+                       cex = 0.8,
+                       las = 1, 
+                       bty = "n"))
+
+lines(lowess(dane_stacja$Opady_dzień, dane_stacja$Licznik), 
+      col = paleta_kolorow[7], lwd = 2)
+
+par(stare_par)
+```
+
+```{r wizualizacja_6_ggplot2_opady}
+ggplot(dane_stacja, aes(x = Opady_dzień, y = Licznik)) +
+  geom_point(color = paleta_kolorow[4], alpha = 0.4) +
+  geom_smooth(method = "loess", color = paleta_kolorow[7], 
+              fill = paleta_kolorow[2], fullrange = FALSE) +
+  labs(title = "Wpływ opadów na natężenie ruchu",
+       subtitle = "Stacja: ul. Chłopska",
+       x = "Suma opadu dzień [mm]",
+       y = "Liczba przejazdów") +
+  theme_light() +
+  expand_limits(y = 0) + 
+  coord_cartesian(ylim = c(0, NA)) + 
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+```{r wizualizacja_6_graphics_opady_uproszczone}
+dane_stacja$Czy_Pada <- ifelse(dane_stacja$Opady_dzień > 0, "Deszcz", "Brak opadu")
+
+stare_par <- par(mar = c(5, 4, 4, 2))
+
+boxplot(Licznik ~ Czy_Pada, 
+        data = dane_stacja,
+        col = c(paleta_kolorow[3], paleta_kolorow[5]),
+        main = "Wpływ deszczu na liczbę przejazdów",
+        ylab = "Liczba przejazdów",
+        xlab = "Warunki pogodowe",
+        outline = FALSE,
+        boxwex = 0.5)
+
+par(stare_par)
+```
+
+```{r wizualizacja_6_ggplot2_opady_uproszczone}
+ggplot(dane_stacja, aes(x = Czy_Pada, y = Licznik, fill = Czy_Pada)) +
+  geom_violin(alpha = 0.5, show.legend = FALSE) +
+  geom_boxplot(width = 0.1, outlier.shape = NA, show.legend = FALSE) +
+  stat_summary(fun = "mean", geom = "point", color = "black", size = 2, show.legend = FALSE) +
+  labs(title = "Wpływ deszczu na natężenie ruchu",
+       subtitle = "Stacja: ul. Chłopska",
+       x = "",
+       y = "Liczba przejazdów") +
+  scale_fill_manual(values = c(paleta_kolorow[3], paleta_kolorow[6])) +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+```{r wizualizacja_6_graphics_inne_zjawisko_pogodowe}
+# XXX Iga moze cos?
+```
+
+```{r wizualizacja_6_ggplot2_inne_zjawisko_pogodowe}
+# XXX Iga moze cos?
 ```
 
 ## Porównanie stacji pod względem zależności z poprzedniego punktu
 
 ```{r wizualizacja_7_pomocnicze}
-
+dane_por_pogoda <- przejazdy[przejazdy$Stacja %in% wybrane_stacje, ]
+dane_por_pogoda$Stacja <- factor(dane_por_pogoda$Stacja, levels = wybrane_stacje)
 ```
 
-```{r wizualizacja_7_graphics}
+```{r wizualizacja_7_graphics_temperatura}
+stare_par <- par(mfrow = c(1, 3), mar = c(5, 4, 4, 1), oma = c(0, 0, 3, 0))
 
+kolory_punktow <- c(paleta_kolorow[4], paleta_kolorow[6], paleta_kolorow[8])
+
+for(i in 1:length(wybrane_stacje)) {
+  s <- wybrane_stacje[i]
+  tmp_data <- dane_por_pogoda[dane_por_pogoda$Stacja == s, ]
+  
+  plot(tmp_data$Temperatura, tmp_data$Licznik,
+       main = s,
+       xlab = "Temperatura [°C]",
+       ylab = "Liczba przejazdów",
+       pch = 16,
+       col = kolory_punktow[i],
+       cex = 0.7,
+       las = 1,
+       bty = "l")
+  
+  model <- lm(Licznik ~ Temperatura, data = tmp_data)
+  abline(model, col = "black", lwd = 2)
+}
+
+title(main = "Wpływ temperatury na natężenie ruchu w różnych punktach", outer = TRUE)
+
+par(stare_par)
 ```
 
-```{r wizualizacja_7_ggplot2}
-
+```{r wizualizacja_7_ggplot2_temperatura}
+ggplot(dane_por_pogoda, aes(x = Temperatura, y = Licznik, color = Stacja)) +
+  geom_point(alpha = 0.3, show.legend = FALSE) +
+  geom_smooth(method = "loess", color = "black", se = FALSE, size = 1) +
+  facet_wrap(vars(Stacja), ncol = 3, scales = "free_y") +
+  scale_color_manual(values = c(paleta_kolorow[4], paleta_kolorow[6], paleta_kolorow[8])) +
+  expand_limits(y = 0) + 
+  coord_cartesian(ylim = c(0, NA)) +
+  labs(title = "Porównanie wrażliwości stacji na temperaturę",
+       subtitle = "Wykorzystanie wygładzania lokalnego (loess) dla zachowania realizmu",
+       x = "Średnia dobowa temperatura [°C]",
+       y = "Liczba przejazdów") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        strip.text = element_text(face = "bold", color = "black"),
+        strip.background = element_rect(fill = "grey95"))
 ```
+
+```{r wizualizacja_7_graphics_opady}
+stare_par <- par(mfrow = c(1, 3), mar = c(4, 4, 4, 1), oma = c(0, 0, 3, 0))
+
+kolory_punktow <- c(paleta_kolorow[4], paleta_kolorow[6], paleta_kolorow[8])
+
+for(i in 1:length(wybrane_stacje)) {
+  s <- wybrane_stacje[i]
+  tmp_data <- dane_por_pogoda[dane_por_pogoda$Stacja == s, ]
+
+  plot(tmp_data$Opady_dzień, tmp_data$Licznik,
+       main = s,
+       xlab = "Suma opadu [mm]",
+       ylab = "Liczba przejazdów",
+       pch = 16,
+       col = kolory_punktow[i],
+       cex = 0.7,
+       las = 1,
+       bty = "l",
+       ylim = c(0, max(tmp_data$Licznik)))
+
+  linie_loess <- lowess(tmp_data$Opady_dzień, tmp_data$Licznik)
+  linie_loess$y <- pmax(0, linie_loess$y)
+  lines(linie_loess, col = "black", lwd = 2)
+}
+
+title(main = "Wpływ opadów na natężenie ruchu w różnych punktach", outer = TRUE)
+
+par(stare_par)
+```
+
+```{r wizualizacja_7_ggplot2_opady}
+ggplot(dane_por_pogoda, aes(x = Opady_dzień, y = Licznik, color = Stacja)) +
+  geom_point(alpha = 0.3, show.legend = FALSE) +
+  geom_smooth(method = "loess", color = "black", se = FALSE, size = 1) +
+  facet_wrap(vars(Stacja), ncol = 3, scales = "free_y") +
+  scale_color_manual(values = c(paleta_kolorow[4], paleta_kolorow[6], paleta_kolorow[8])) +
+  expand_limits(y = 0) + 
+  coord_cartesian(ylim = c(0, NA)) +
+  labs(title = "Porównanie reakcji stacji na opady deszczu",
+       subtitle = "Krzywa loess pokazuje tempo spadku liczby rowerzystów",
+       x = "Suma opadu dzień [mm]",
+       y = "Liczba przejazdów") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        strip.text = element_text(face = "bold", color = "black"),
+        strip.background = element_rect(fill = "grey95"))
+```
+
 
 ## Naniesienie na mapę wybranych statystyk dotyczących przejazdów w punktach pomiarowych
 
