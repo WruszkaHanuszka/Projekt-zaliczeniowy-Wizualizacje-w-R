@@ -36,7 +36,8 @@ knitr::opts_chunk$set(
 pacman::p_load(
   RColorBrewer, 
   ggplot2, 
-  stringr
+  stringr,
+  lubridate # do 4.
   )
 ```
 
@@ -229,29 +230,142 @@ ggplot(przejazdy, aes(x = Stacja_f, y = Licznik)) +
 ## Natężenie / rozkład przejazdów dla wybranej stacji w zależności od miesiąca / dnia tygodnia / dni powszednich/weekendowych
 
 ```{r wizualizacja_4_pomocnicze}
+przejazdy$Miesiac <- month(przejazdy$Data, label = TRUE, abbr = FALSE)
+przejazdy$DzienTyg <- wday(przejazdy$Data, label = TRUE, abbr = FALSE, week_start = 1)
+przejazdy$TypDnia <- ifelse(przejazdy$DzienTyg %in% c("sobota", "niedziela"), "Weekend", "Dzień powszedni")
 
+dane_stacja <- przejazdy[przejazdy$Stacja == "ul. Chłopska", ]
 ```
 
 ```{r wizualizacja_4_graphics}
+par(mfrow = c(1, 2), mar = c(9, 4, 4, 1) + 0.1)
 
+boxplot(Licznik ~ DzienTyg, data = dane_stacja,
+        main = "Ruch w dniach tygodnia",
+        col = paleta_kolorow[4], las = 2, cex.axis = 0.8,
+        ylab = "Liczba przejazdów", xlab = "") # musiałyśmy usunąć tutaj tytuł osi x bo nachodzi na etykiety
+
+title(xlab = "Dzień tygodnia", line = 6)
+
+boxplot(Licznik ~ TypDnia, data = dane_stacja,
+        main = "Weekend vs Roboczy",
+        col = c(paleta_kolorow[3], paleta_kolorow[6]),
+        ylab = "", xlab = "") # tu nie nachodzi ale brzydko było nierówno z tym pierwszym
+
+title(xlab = "Typ dnia", line = 6)
+
+par(mfrow = c(1,1))
 ```
 
 ```{r wizualizacja_4_ggplot2}
-
+ggplot(dane_stacja, aes(x = Miesiac, y = Licznik, fill = Miesiac)) +
+  geom_boxplot(alpha = 0.6, show.legend = FALSE) +
+  stat_summary(fun = "mean", geom = "point", color = "black", size = 2, show.legend = FALSE) +
+    labs(title = paste("Sezonowość przejazdów -", stacja_wybrana),
+       x = "Miesiąc",
+       y = "Liczba przejazdów dziennie") +
+  theme_light() +
+  scale_fill_manual(values = colorRampPalette(paleta_kolorow)(12)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
 ```
 
 ## Porównanie stacji pod względem zależności z poprzedniego punktu
 
+Wybrano dwie dodatkowe stacje dla porównania z stacją "Ul. Chłopska".
+
 ```{r wizualizacja_5_pomocnicze}
+wybrane_stacje <- c("ul. Kartuska", "al. Grunwaldzka (UG)", "ul. Chłopska")
 
+dane_porownanie <- przejazdy[przejazdy$Stacja %in% wybrane_stacje, ]
+
+dane_porownanie$Stacja <- factor(dane_porownanie$Stacja, levels = wybrane_stacje) # kolejnosc
 ```
 
-```{r wizualizacja_5_graphics}
+```{r wizualizacja_5_graphics_brzydkie}
+stare_par <- par(mfrow = c(1, 3), mar = c(5, 4, 4, 1), oma = c(0, 0, 2, 0))
 
+for(s in wybrane_stacje) {
+  boxplot(Licznik ~ TypDnia, 
+          data = dane_porownanie[dane_porownanie$Stacja == s, ],
+          main = s,
+          col = c(paleta_kolorow[3], paleta_kolorow[6]),
+          las = 1, 
+          ylab = "Liczba przejazdów",
+          outline = FALSE)
+}
+
+title(main = "Porównanie natężenia przejazdów między stacjami w ujęciu tygodniowym", outer = TRUE)
+
+par(stare_par)
 ```
 
-```{r wizualizacja_5_ggplot2}
+```{r wizualizacja_5_graphics_lepsza}
+par(mar = c(7, 4, 4, 1) + 0.1)
 
+boxplot(Licznik ~ Stacja * TypDnia, 
+        data = dane_porownanie,
+        boxwex = 0.6,
+        col = rep(paleta_kolorow[c(3, 6, 8)], 2),
+        main = "Porównanie natężenia przejazdów między stacjami w ujęciu tygodniowym",
+        ylab = "Liczba przejazdów",
+        xlab = "",
+        las = 2,
+        cex.axis = 0.7,
+        xaxt = "n",
+        outline = FALSE)
+
+axis(1, at = 1:6, labels = rep(wybrane_stacje, 2), las = 2, cex.axis = 0.6)
+
+mtext("Dni powszednie", side = 1, line = 6, at = 2)
+mtext("Weekendy", side = 1, line = 6, at = 5)
+
+abline(v = 3.5, lty = 2, col = "grey")
+```
+
+
+
+```{r wizualizacja_5_graphics_najlepsza}
+par(mar = c(8, 4, 4, 1) + 0.1)
+
+pozycje <- c(1, 2, 3, 5, 6, 7) # cel: lepiej rozgraniczyć dni powszednie od weekendow
+
+boxplot(Licznik ~ Stacja * TypDnia, 
+        data = dane_porownanie,
+        at = pozycje,
+        boxwex = 0.6,
+        col = rep(paleta_kolorow[c(3, 6, 8)], 2),
+        main = "Porównanie natężenia przejazdów między stacjami w ujęciu tygodniowym",
+        ylab = "Liczba przejazdów",
+        xlab = "",
+        las = 2,
+        cex.axis = 0.7,
+        xaxt = "n",
+        outline = FALSE)
+
+axis(1, at = pozycje, labels = rep(wybrane_stacje, 2), las = 2, cex.axis = 0.6)
+
+mtext("Dni powszednie", side = 1, line = 6, at = 2, font = 2)
+mtext("Weekendy", side = 1, line = 6, at = 6, font = 2)
+
+abline(v = 4, lty = 2, col = "grey50")
+```
+
+```{r wizualizacja_5_ggplot2, fig.height = 8}
+ggplot(dane_porownanie, aes(x = Miesiac, y = Licznik, fill = Stacja)) +
+  geom_boxplot(alpha = 0.7, show.legend = FALSE, outlier.size = 0.5) +
+  stat_summary(fun = "mean", geom = "point", color = "white", 
+               shape = 18, size = 2, show.legend = FALSE) +
+  facet_wrap(vars(Stacja), ncol = 1, scales = "free_y") + 
+  scale_fill_manual(values = c(paleta_kolorow[4], paleta_kolorow[6], paleta_kolorow[8])) +
+  labs(title = "Porównanie natężenia przejazdów między stacjami w ujęciu miesięcznym",
+       x = "Miesiąc",
+       y = "Dzienny licznik przejazdów") +
+  theme_light() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        strip.background = element_rect(fill = "grey90"),
+        strip.text = element_text(color = "black", face = "bold"),
+        plot.title = element_text(hjust = 0.5))
 ```
 
 ## Zależność między liczbą przejazdów a wybranymi warunkami pogodowymi dla wybranej stacji
